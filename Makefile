@@ -31,15 +31,15 @@ hpc: $(ALICE).hpc
 ### Alice ###
 
 $(ALICE):	$(BUILDDIR)
-	$(HC) --make Main.hs -o $@ $(HFLAGS) $(BUILDOPT)
+	$(HC) --make $(ALICEDIR)/Main.hs -main-is Alice.Main -o $@ $(HFLAGS) $(BUILDOPT)
 	$(if $(STRIP),$(STRIP) $@)
 
 $(ALICE).p:	$(BUILDDIR)
-	$(HC) --make Main.hs -o $@ $(HFLAGS) $(PROFLOPT)
+	$(HC) --make $(ALICEDIR)/Main.hs -o $@ $(HFLAGS) $(PROFLOPT)
 	$(if $(STRIP),$(STRIP) -s $@)
 
 $(ALICE).hpc:	$(BUILDDIR)
-	$(HC) --make Main.hs -o $@ $(HFLAGS) $(COVEROPT)
+	$(HC) --make $(ALICEDIR)/Main.hs -o $@ $(HFLAGS) $(COVEROPT)
 	$(if $(STRIP),$(STRIP) -s $@)
 
 ### Moses ###
