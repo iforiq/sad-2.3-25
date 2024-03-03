@@ -24,7 +24,7 @@ import Data.List
 import Control.Monad
 import System.IO
 import System.IO.Error
-import System.Exit
+import System.Exit (exitFailure)
 
 import Alice.Data.Text
 import Alice.Data.Instr
@@ -44,7 +44,7 @@ readInit :: String -> IO [Instr]
 readInit ""   = return []
 
 readInit file =
-  do  input <- catch (readFile file) $ die file . ioeGetErrorString
+  do  input <- catchIOError (readFile file) $ die file . ioeGetErrorString
       let tkn = tokenize input ; ips = initPS ()
           inp = ips { psRest = tkn, psFile = file, psLang = "Init" }
       liftM fst $ fireLPM instf inp
@@ -74,7 +74,7 @@ reader lb fs (ps:ss) [TI (InStr ISfile file)] | file `elem` fs =
 reader lb fs (ps:ss) [TI (InStr ISfile file)] =
   do  let gfl = if null file  then hGetContents stdin
                               else readFile file
-      input <- catch gfl $ die file . ioeGetErrorString
+      input <- catchIOError gfl $ die file . ioeGetErrorString
       let tkn = tokenize input
           ips = initPS $ (psProp ps) { tvr_expr = [] }
           sps = ips { psRest = tkn, psFile = file, psOffs = psOffs ps }
@@ -126,5 +126,5 @@ warn :: String -> String -> IO ()
 warn fn st = info "Main" fn st
 
 die :: String -> String -> IO a
-die fn st = warn fn st >> exitFailure
+die fn st = warn fn st >> System.Exit.exitFailure
 
