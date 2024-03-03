@@ -60,7 +60,7 @@ export prs ins cnt gl =
       when (askIB IBPdmp False ins) $ putStrLn tsk
 
       seq (length tsk) $ return $
-        do  (wh,rh,eh,ph) <- catch run
+        do  (wh,rh,eh,ph) <- catchIOError run
                 $ \ e -> die $ "run error: " ++ ioeGetErrorString e
 
             hPutStrLn wh tsk ; hClose wh

@@ -21,6 +21,7 @@
 module Alice.Parser.Base where
 
 import Control.Monad
+import Control.Applicative
 import Data.List
 
 import Alice.Parser.Token
@@ -45,10 +46,23 @@ type CPMS a b   = PState a -> b -> b
 type CPMC a b c = (c -> CPMS a b) -> (String -> CPMS a b) -> CPMS a b
 newtype CPM a c = CPM { runCPM :: forall b . CPMC a b c }
 
+instance Functor (CPM a) where
+  fmap = liftM
+
+instance Applicative (CPM a) where
+  pure r  = CPM $ \ k _ -> k r
+  (<*>) = ap
+
 instance Monad (CPM a) where
-  return r  = CPM $ \ k _ -> k r
+  return = pure
   m >>= n   = CPM $ \ k l -> runCPM m (\ b -> runCPM (n b) k l) l
+
+instance MonadFail (CPM a) where
   fail e    = CPM $ \ _ l -> l e
+
+instance Control.Applicative.Alternative (CPM a) where
+    (<|>) = mplus
+    empty = mzero
 
 instance MonadPlus (CPM a) where
   mzero     = CPM $ \ _ _ _ z -> z

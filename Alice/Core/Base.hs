@@ -21,6 +21,7 @@
 module Alice.Core.Base where
 
 import Control.Monad
+import Control.Applicative
 import Data.IORef
 import Data.List
 import Data.Time
@@ -28,6 +29,8 @@ import Data.Time
 import Alice.Data.Instr
 import Alice.Data.Text
 import Alice.Export.Base
+import qualified Control.Applicative as GHC
+import qualified Control.Applicative as Control
 
 -- Reasoner state
 
@@ -61,9 +64,20 @@ data CntrI  = CIsect
 type CRMC a b = IORef RState -> IO a -> (b -> IO a) -> IO a
 newtype CRM b = CRM { runCRM :: forall a . CRMC a b }
 
+instance Functor CRM where
+  fmap = liftM
+
+instance Applicative CRM where
+  pure r  = CRM $ \ _ _ k -> k r
+  (<*>) = ap
+
 instance Monad CRM where
-  return r  = CRM $ \ _ _ k -> k r
+  return = pure
   m >>= n   = CRM $ \ s z k -> runCRM m s z (\ r -> runCRM (n r) s z k)
+
+instance Control.Applicative.Alternative CRM where
+    (<|>) = mplus
+    empty = mzero
 
 instance MonadPlus CRM where
   mzero     = CRM $ \ _ z _ -> z
