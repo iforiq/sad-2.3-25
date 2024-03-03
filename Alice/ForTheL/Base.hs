@@ -223,11 +223,11 @@ naguard = guard . notElem "and"
 
 namlist = varlist -|- liftM (:[]) hidden
 
-varlist = do  vs <- chainEx (char ',') var
-              nodups vs ; return vs
+varlist = do  vs <- chainEx (char ',') var ; return vs
+              --nodups vs ; return vs
 
-nodups vs = unless (null $ dups vs) $
-              fail $ "duplicate names: " ++ show vs
+-- nodups vs = unless (null $ dups vs) $
+--               fail $ "duplicate names: " ++ show vs
 
 hidden  = askPS psOffs >>= \ n -> return ('h':show n)
 
