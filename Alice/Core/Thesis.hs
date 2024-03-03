@@ -21,6 +21,7 @@
 module Alice.Core.Thesis (thesis) where
 
 import Control.Monad
+import Control.Applicative
 import Data.List
 import Data.Maybe
 
@@ -126,10 +127,21 @@ tmVars u f  = TM (vrs [])
 
 newtype TM res = TM { runTM :: [String] -> [([String], res)] }
 
+instance Functor TM where
+  fmap = liftM
+
+instance Applicative TM where
+  pure r  = TM $ \ s -> [(s, r)]
+  (<*>) = ap
+
 instance Monad TM where
-  return r  = TM $ \ s -> [(s, r)]
+  return = pure
   m >>= k   = TM $ \ s -> concatMap apply (runTM m s)
     where apply (s, r) = runTM (k r) s
+
+instance Alternative TM where
+    (<|>) = mplus
+    empty = mzero
 
 instance MonadPlus TM where
   mzero     = TM $ \ _ -> []

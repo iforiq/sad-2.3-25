@@ -93,6 +93,8 @@ roundF c fn cn sg n = dive
     dive (Not f)    = Not $ fn cn (liftM not sg) n f
     dive f          = mapF (fn cn sg n) f
 
+    
+
 roundFM :: (Monad m) =>
           Char -> ([Formula] -> Maybe Bool -> Int -> Formula -> m Formula)
                ->  [Formula] -> Maybe Bool -> Int -> Formula -> m Formula

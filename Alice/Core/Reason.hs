@@ -22,7 +22,7 @@ module Alice.Core.Reason where
 
 import Control.Monad
 
-import Alice.Core.Base
+import Alice.Core.Base 
 import Alice.Core.Info
 import Alice.Core.Unfold
 import Alice.Data.Formula
@@ -41,7 +41,7 @@ reason cnt tc = do  flt <- askRSIB IBfilt True
                     goalseq n nct tc $ splitG $ cnForm tc
 
 goalseq :: Int -> [Context] -> Context -> [Formula] -> RM ()
-goalseq n cnt tc (f:fs) = do  trv <> lnc <> dlp
+goalseq n cnt tc (f:fs) = do  trv Alice.Core.Base.<> lnc Alice.Core.Base.<> dlp
                               goalseq n cnt tc fs
   where
     rfr = reduce f

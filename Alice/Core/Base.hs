@@ -75,9 +75,13 @@ instance Monad CRM where
   return = pure
   m >>= n   = CRM $ \ s z k -> runCRM m s z (\ r -> runCRM (n r) s z k)
 
-instance Control.Applicative.Alternative CRM where
+instance Alternative CRM where
     (<|>) = mplus
     empty = mzero
+
+-- hackily added to help Alice.Core.Reason.launch function
+instance MonadFail CRM where
+  fail _ = mzero
 
 instance MonadPlus CRM where
   mzero     = CRM $ \ _ z _ -> z

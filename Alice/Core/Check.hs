@@ -59,16 +59,16 @@ fillDef ths cnt cx  = fill True False [] (Just True) 0 $ cnForm cx
 setDef :: Bool -> [Context] -> Context -> Formula -> RM Formula
 setDef nw cnt cx trm@(Trm t _ _)  = incRSCI CIsymb >>
       ((guard (elem ':' t) >> return trm)
-    <> (guardNotIB IBchck True >> return trm)
-    <> (msum $ map (testDef False cnt cx trm) dfs)
-    <> (guard (t == "=" || elem '#' t) >> return trm)
-    <> (msum $ map (testDef True  cnt cx trm) dfs)
-    <> (guard nw >> nwt)
-    <> (out >> mzero))
+    Alice.Core.Base.<> (guardNotIB IBchck True >> return trm)
+    Alice.Core.Base.<> (msum $ map (testDef False cnt cx trm) dfs)
+    Alice.Core.Base.<> (guard (t == "=" || elem '#' t) >> return trm)
+    Alice.Core.Base.<> (msum $ map (testDef True  cnt cx trm) dfs)
+    Alice.Core.Base.<> (guard nw >> nwt)
+    Alice.Core.Base.<> (out >> mzero))
   where
     dfs = mapMaybe (findDef trm) cnt
     str = trm { trName = t ++ ':' : show (length dfs) }
-    nwt = (guardIB IBsign True >> return str) <> return trm
+    nwt = (guardIB IBsign True >> return str) Alice.Core.Base.<> return trm
     out = rlog (cnHead cx) $ "unrecognized: " ++ showsPrec 2 trm ""
 
 
@@ -101,7 +101,7 @@ findDef trm cx  = dive Top 0 $ cnForm cx
 
 testDef :: Bool -> [Context] -> Context -> Formula -> DefTrio -> RM Formula
 testDef hard cnt cx trm (dc, gs, nt)
-    = setup >> (guards <> (cleanup >> mzero)) >> cleanup >> return nt
+    = setup >> (guards Alice.Core.Base.<> (cleanup >> mzero)) >> cleanup >> return nt
   where
     guards  | hard  = do  whdchk $ header; incRSCI CIchkh
                           reason cnt $ setForm ccx gs; incRSCI CIchky

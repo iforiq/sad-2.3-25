@@ -85,7 +85,7 @@ vLoop True ths _ cnt [] = whenIB IBprov True prove >> return []
     prove = do  let rl = rlog bl $ "goal: " ++ tx
                     bl = cnHead ths ; tx = blText bl
                 incRSCI CIgoal ; whenIB IBPgls True rl
-                reason cnt ths <> (rlog bl "goal failed" >>
+                reason cnt ths Alice.Core.Base.<> (rlog bl "goal failed" >>
                     guardIB IBskip False >> incRSCI CIfail)
 
 vLoop mot ths brn cnt (TI ins : bs) =
@@ -156,13 +156,13 @@ procTI mot ths _ cnt = proc
 
     proc (InBin IBverb True)
       = do (guardNotIB IBPgls True  >> addRSIn (InBin IBPgls True))
-        <> (guardNotIB IBPrsn False >> addRSIn (InBin IBPrsn True))
-        <> (guardNotIB IBPsct False >> addRSIn (InBin IBPsct True))
-        <> (guardNotIB IBPchk False >> addRSIn (InBin IBPchk True))
-        <> (guardNotIB IBPprv False >> addRSIn (InBin IBPprv True))
-        <> (guardNotIB IBPunf False >> addRSIn (InBin IBPunf True))
-        <> (guardNotIB IBPtsk False >> addRSIn (InBin IBPtsk True))
-        <> return ()
+        Alice.Core.Base.<> (guardNotIB IBPrsn False >> addRSIn (InBin IBPrsn True))
+        Alice.Core.Base.<> (guardNotIB IBPsct False >> addRSIn (InBin IBPsct True))
+        Alice.Core.Base.<> (guardNotIB IBPchk False >> addRSIn (InBin IBPchk True))
+        Alice.Core.Base.<> (guardNotIB IBPprv False >> addRSIn (InBin IBPprv True))
+        Alice.Core.Base.<> (guardNotIB IBPunf False >> addRSIn (InBin IBPunf True))
+        Alice.Core.Base.<> (guardNotIB IBPtsk False >> addRSIn (InBin IBPtsk True))
+        Alice.Core.Base.<> return ()
 
     proc i  = addRSIn i
 
